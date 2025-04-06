@@ -47,7 +47,7 @@ class Graph:
         self.edges = {edge.id: edge for edge in edges}
 
         if adjacent_edges == None:
-            adjacent_edges = self.__build_adjacent_edges_from_edges(edges)
+            adjacent_edges = self.__build_adjacent_edges_from_edges(self.edges)
 
         self.adjacent_edges = adjacent_edges
 
@@ -85,10 +85,11 @@ class Graph:
         )
 
     def __build_adjacent_edges_from_edges(
-        self, edges: List[Edge]
+        self, edges: Dict[int, Edge]
     ) -> Dict[int, List[Edge]]:
         adjacent_edges: Dict[int, List[Edge]] = {}
-        for edge in edges:
+        for edge_id in edges.keys():
+            edge = edges[edge_id]
             node = edge.start_node
             try:
                 adjacent_edges[node.id].append(edge)
