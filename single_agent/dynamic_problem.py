@@ -1,5 +1,6 @@
-from typing import Dict
+from typing import Dict, Any
 import heapq
+from dataclasses import dataclass, field
 
 from common import (
     Graph,
@@ -30,6 +31,12 @@ def decrease_edge_weight(
         )
 
 
+@dataclass(order=True)
+class PrioritizedItem:
+    priority: float
+    item: Any = field(compare=False)
+
+
 def decrease_edge_weight_for_single_source(
     graph: Graph,
     output_info: OutputInformation,
@@ -46,25 +53,37 @@ def decrease_edge_weight_for_single_source(
     output_info.set_distance(end_node.id, new_distance)
     output_info.update_parent_of_node(node_id=end_node.id, parent_id=start_node.id)
 
-    queue = [[output_info.get_distance(end_node.id), end_node]]
+    queue = [
+        PrioritizedItem(
+            priority=output_info.get_distance(end_node.id),
+            item=end_node,
+        ),
+    ]
     queue_dict = {end_node.id: queue[0]}
     while len(queue) > 0:
-        [d, node] = heapq.heappop(queue)
-        del queue_dict[node.id]
-        for edge in graph.get_adjacent_edges(node.id):
+        current_item = heapq.heappop(queue)
+        current_node = current_item.item
+        del queue_dict[current_node.id]
+
+        for edge in graph.get_adjacent_edges(current_node.id):
             current_distance = output_info.get_distance(edge.end_node.id)
-            new_distance = output_info.get_distance(node.id) + edge.weight
+            new_distance = output_info.get_distance(current_node.id) + edge.weight
             if new_distance >= current_distance:
                 continue
 
             output_info.set_distance(edge.end_node.id, new_distance)
-            output_info.update_parent_of_node(edge.end_node.id, node.id)
+            output_info.update_parent_of_node(
+                node_id=edge.end_node.id, parent_id=current_node.id
+            )
 
             if edge.end_node.id not in queue_dict:
-                c = [output_info.get_distance(edge.end_node.id), edge.end_node.id]
-                heapq.heappush(c)
-                queue_dict[edge.end_node.id] = c
+                item = PrioritizedItem(
+                    priority=output_info.get_distance(edge.end_node.id),
+                    item=edge.end_node,
+                )
+                heapq.heappush(queue, item)
+                queue_dict[edge.end_node.id] = item
             else:
-                queue_dict[edge.end_node.id][0] = output_info.get_distance(
+                queue_dict[edge.end_node.id].item.priority = output_info.get_distance(
                     edge.end_node.id
                 )
