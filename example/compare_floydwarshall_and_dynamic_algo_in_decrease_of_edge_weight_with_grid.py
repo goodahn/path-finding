@@ -1,5 +1,6 @@
 import sys
 import time
+import random
 
 
 from single_agent.output_information import (
@@ -26,7 +27,10 @@ if __name__ == "__main__":
     print(f"execution time of floyd warshall: {end_time - start_time} s")
 
     start_time = time.time()
-    decrease_edge_weight(graph, output_info_dict, 5, 9)
+    for test_node_id in random.sample(list(range(width*height)), width*height//10):
+        test_edges = graph.get_adjacent_edges(test_node_id)
+        for test_edge in test_edges:
+            decrease_edge_weight(graph, output_info_dict, test_edge.id, test_edge.weight - 1)
     end_time = time.time()
     print(
         f"execution time of dynamic algorithm in decrease of edge weight: {end_time - start_time} s"
