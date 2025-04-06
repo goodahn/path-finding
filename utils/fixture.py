@@ -12,7 +12,7 @@ def make_grid(width: int, height: int) -> Graph:
             nodes.append(Node(id=col_idx + row_idx * width))
 
     edges = []
-    edge_id = 1
+    edge_id = 0
     for row_idx in range(height):
         for col_idx in range(width):
             node_id = col_idx + row_idx * width
