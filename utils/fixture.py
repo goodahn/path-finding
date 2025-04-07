@@ -36,6 +36,7 @@ def make_grid(width: int, height: int) -> Graph:
                         weight=10,
                     )
                 )
+                edge_id += 1
                 edges.append(
                     Edge(
                         id=edge_id,
