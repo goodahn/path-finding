@@ -6,9 +6,7 @@ from common import (
     Edge,
     Graph,
 )
-from single_agent.output_information import (
-    make_output_information_for_all_pair,
-)
+from single_agent import floyd_warshall
 from single_agent.dynamic_problem import (
     decrease_edge_weight,
 )
@@ -30,7 +28,7 @@ if __name__ == "__main__":
 
     graph = Graph(nodes=nodes, edges=edges)
     start_time = time.time()
-    output_info_dict = make_output_information_for_all_pair(graph)
+    output_info_dict = floyd_warshall.make_output_information(graph)
     end_time = time.time()
     for node_id in sorted(output_info_dict.keys()):
         output_info = output_info_dict[node_id]

@@ -3,9 +3,7 @@ import time
 import random
 
 
-from single_agent.output_information import (
-    make_output_information_for_all_pair,
-)
+from single_agent import floyd_warshall
 from single_agent.dynamic_problem import (
     decrease_edge_weight,
 )
@@ -22,12 +20,12 @@ if __name__ == "__main__":
         f"execution time of constructing {width}x{height} grid: {end_time - start_time} s"
     )
     start_time = time.time()
-    output_info_dict = make_output_information_for_all_pair(graph)
+    output_info_dict = floyd_warshall.make_output_information(graph)
     end_time = time.time()
     print(f"execution time of floyd warshall: {end_time - start_time} s")
 
     start_time = time.time()
-    for test_node_id in random.sample(list(range(width*height)), width*height//10):
+    for test_node_id in random.sample(list(range(width*height)), width*height//20*4):
         test_edges = graph.get_adjacent_edges(test_node_id)
         for test_edge in test_edges:
             decrease_edge_weight(graph, output_info_dict, test_edge.id, test_edge.weight - 1)

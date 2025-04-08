@@ -3,9 +3,8 @@ from common import (
     Node,
     Edge,
     Graph,
-    Tree,
 )
-from single_agent.output_information import make_output_information_for_single_source
+from single_agent import bellman_ford
 
 if __name__ == "__main__":
     nodes = []
@@ -22,7 +21,7 @@ if __name__ == "__main__":
     edges.append(Edge(7, start_node=nodes[4], end_node=nodes[5], weight=1))
 
     graph = Graph(nodes=nodes, edges=edges)
-    output_info = make_output_information_for_single_source(graph, nodes[0])
+    output_info = bellman_ford.make_output_information(graph, nodes[0])
     pprint.pprint(output_info.shortest_distance_dict)
 
     queue = [output_info.shortest_tree_dict[nodes[0].id]]
