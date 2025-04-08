@@ -14,7 +14,7 @@ from utils.fixture import make_grid
 if __name__ == "__main__":
     width, height = int(sys.argv[1]), int(sys.argv[2])
     start_time = time.time()
-    graph = make_grid(width, height)
+    graph = make_grid(width, height, 10)
     end_time = time.time()
     print(
         f"execution time of constructing {width}x{height} grid: {end_time - start_time} s"

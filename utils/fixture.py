@@ -5,7 +5,7 @@ from common import (
 )
 
 
-def make_grid(width: int, height: int) -> Graph:
+def make_grid(width: int, height: int, unit: float) -> Graph:
     nodes = []
     for row_idx in range(height):
         for col_idx in range(width):
@@ -33,16 +33,7 @@ def make_grid(width: int, height: int) -> Graph:
                         id=edge_id,
                         start_node=nodes[node_id],
                         end_node=nodes[other_node_id],
-                        weight=10,
-                    )
-                )
-                edge_id += 1
-                edges.append(
-                    Edge(
-                        id=edge_id,
-                        start_node=nodes[other_node_id],
-                        end_node=nodes[node_id],
-                        weight=10,
+                        weight=unit,
                     )
                 )
                 edge_id += 1

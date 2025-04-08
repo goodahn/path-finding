@@ -13,7 +13,7 @@ from utils.fixture import make_grid
 class TestDecreaseEdgeWeight(TestCase):
     def test_with_grid(self):
         width, height = random.randint(3, 10), random.randint(3, 10)
-        graph = make_grid(width, height)
+        graph = make_grid(width, height, 10)
         output_info_dict = floyd_warshall.make_output_information(graph)
         
         for test_edge_id in random.sample(list(range(1, width*height)), 5):
