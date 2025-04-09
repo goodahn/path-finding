@@ -19,31 +19,25 @@ class ExpandNode:
     value: Node
     goal: Node
     g_val: float
-    h_func: Callable
 
     @property
     def id(self) -> int:
         return self.value.id
-
-    @property
-    def f_val(self) -> float:
-        return self.g_val + self.h_func(self)
     
     def __lt__(self, other):
-        return self.f_val < other.f_val
+        return self.g_val < other.g_val
 
 
 def find_shortest_path(
     graph: Graph,
     source_node_id: int,
     goal_node_id: int,
-    h_func: Callable,
 ) -> Tuple[float, Tree]:
     source_node = graph.get_node(source_node_id)
     goal_node = graph.get_node(goal_node_id)
 
     def new_expand_node(parent:ExpandNode|None, value:Node, goal:Node, g_val:float) -> ExpandNode:
-        return ExpandNode(parent, value, goal, g_val, h_func)
+        return ExpandNode(parent, value, goal, g_val)
 
     open = [new_expand_node(None, source_node, goal_node, 0)]
     closed = {}
@@ -86,5 +80,4 @@ if __name__ == "__main__":
     edges.append(Edge(6, start_node=nodes[4], end_node=nodes[5], weight=1))
 
     graph = Graph(nodes=nodes, edges=edges)
-    h_func = lambda _: 0
-    print(find_shortest_path(graph, 0, 5, h_func))
+    print(find_shortest_path(graph, 0, 5))
