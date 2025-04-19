@@ -9,16 +9,23 @@ class Tree:
         self.parent: "Tree" | None = None
         self.children: Set["Tree"] = set()
 
+    def get_parent(self) -> "Tree":
+        return self.parent
+
     def set_parent(self, parent: "Tree"):
         if self.parent is not None:
-            self.parent.remove_child(self)
+            self.parent._remove_child(self)
 
         self.parent = parent
 
-        self.parent.add_child(self)
+        if self.parent is not None:
+            self.parent._add_child(self)
 
-    def add_child(self, child: "Tree"):
+    def get_children(self) -> Set["Tree"]:
+        return self.children
+    
+    def _add_child(self, child: "Tree"):
         self.children.add(child)
 
-    def remove_child(self, child: "Tree"):
+    def _remove_child(self, child: "Tree"):
         self.children.remove(child)
