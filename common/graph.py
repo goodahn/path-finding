@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Dict, Set
 
 
@@ -7,6 +7,21 @@ class Node:
     id: int
     is_visited: bool = False
 
+    inbound_edges: List["Edge"] = field(default_factory=list)
+    outbound_edges: List["Edge"] = field(default_factory=list)
+
+    def add_inbound_edge(self, edge: "Edge"):
+        self.inbound_edges.append(edge)
+
+    def add_outbound_edge(self, edge: "Edge"):
+        self.outbound_edges.append(edge)
+
+    def get_inbound_edges(self) -> List["Edge"]:
+        return self.inbound_edges
+    
+    def get_outbound_edges(self) -> List["Edge"]:
+        return self.outbound_edges
+
 
 @dataclass
 class Edge:
@@ -14,6 +29,15 @@ class Edge:
     start_node: Node
     end_node: Node
     weight: float
+
+    def __init__(self, id:int, start_node:Node, end_node:Node, weight:float):
+        self.id = id
+        self.start_node = start_node
+        self.end_node = end_node
+        self.weight = weight
+
+        self.start_node.add_outbound_edge(self)
+        self.end_node.add_inbound_edge(self)
 
     def get_weight(self) -> float:
         return self.weight
@@ -31,25 +55,15 @@ class Edge:
 class Graph:
     nodes: Dict[int, Node]
     edges: Dict[int, Edge]
-    adjacent_edges: Dict[int, List[Edge]]
 
     def __init__(
         self,
         *,
         nodes: List[Node],
         edges: List[Edge] = None,
-        adjacent_edges: Dict[int, List[Edge]] = None
     ):
-        if edges == None and adjacent_edges == None:
-            raise Exception("edges and adjacent_edges cannot be both None")
-
         self.nodes = {node.id: node for node in nodes}
         self.edges = {edge.id: edge for edge in edges}
-
-        if adjacent_edges == None:
-            adjacent_edges = self.__build_adjacent_edges_from_edges(self.edges)
-
-        self.adjacent_edges = adjacent_edges
 
     def get_node(self, node_id: int) -> Node:
         return self.nodes[node_id]
@@ -64,8 +78,11 @@ class Graph:
         adjacent_edges = self.adjacent_edges.get(node_id, [])
         return [edge.get_other_node(node_id) for edge in adjacent_edges]
 
-    def get_adjacent_edges(self, node_id: int) -> List[Edge]:
-        return self.adjacent_edges.get(node_id, [])
+    def get_outbound_edges(self, node_id: int) -> List[Edge]:
+        return self.get_node(node_id).get_outbound_edges()
+    
+    def get_inbound_edges(self, node_id: int) -> List[Edge]:
+        return self.get_node(node_id).get_inbound_edges()
 
     def update_local(
         self,
@@ -83,16 +100,3 @@ class Graph:
             key=backward,
             reverse=True,
         )
-
-    def __build_adjacent_edges_from_edges(
-        self, edges: Dict[int, Edge]
-    ) -> Dict[int, List[Edge]]:
-        adjacent_edges: Dict[int, List[Edge]] = {}
-        for edge_id in edges.keys():
-            edge = edges[edge_id]
-            node = edge.start_node
-            try:
-                adjacent_edges[node.id].append(edge)
-            except:
-                adjacent_edges[node.id] = [edge]
-        return adjacent_edges
