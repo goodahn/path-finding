@@ -53,7 +53,7 @@ def find_shortest_path(
             return (node.g_val, traceback(node))
 
         closed[node.id] = node
-        for edge in graph.get_adjacent_edges(node.id):
+        for edge in graph.get_outbound_edges(node.id):
             weight = edge.get_weight()
             other_node = edge.get_other_node(node.id)
             new_g_val = node.g_val + weight
@@ -69,22 +69,3 @@ def traceback(node: ExpandNode) -> List[ExpandNode]:
         node = node.parent
     path.reverse()
     return path
-
-if __name__ == "__main__":
-    from common import Edge
-    nodes = []
-    for i in range(6):
-        nodes.append(Node(id=i))
-
-    edges = []
-    edges.append(Edge(0, start_node=nodes[0], end_node=nodes[1], weight=3))
-    edges.append(Edge(1, start_node=nodes[0], end_node=nodes[2], weight=1))
-    edges.append(Edge(2, start_node=nodes[1], end_node=nodes[3], weight=1))
-    edges.append(Edge(3, start_node=nodes[1], end_node=nodes[4], weight=1))
-    edges.append(Edge(4, start_node=nodes[1], end_node=nodes[5], weight=10))
-    edges.append(Edge(5, start_node=nodes[2], end_node=nodes[3], weight=1))
-    edges.append(Edge(6, start_node=nodes[4], end_node=nodes[5], weight=1))
-
-    graph = Graph(nodes=nodes, edges=edges)
-    h_func = lambda _: 0
-    print(find_shortest_path(graph, 0, 5, h_func))

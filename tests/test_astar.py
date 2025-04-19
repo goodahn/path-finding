@@ -14,7 +14,6 @@ class TestAstar(TestCase):
             for goal_node_id in range(width*height):
                 x_goal_node, y_goal_node = goal_node_id % width, goal_node_id // width
 
-                print(source_node_id, goal_node_id)
                 (shortest_distance, _) = find_shortest_path(graph, source_node_id, goal_node_id, lambda _:0)
                 self.assertEqual(shortest_distance, abs(x_source_node - x_goal_node) + abs(y_source_node - y_goal_node))
     
@@ -31,7 +30,6 @@ class TestAstar(TestCase):
             for goal_node_id in range(width*height):
                 x_goal_node, y_goal_node = goal_node_id % width, goal_node_id // width
 
-                print(source_node_id, goal_node_id)
                 (shortest_distance, _) = find_shortest_path(graph, source_node_id, goal_node_id, heuristic)
                 self.assertEqual(shortest_distance, abs(x_source_node - x_goal_node) + abs(y_source_node - y_goal_node))
 

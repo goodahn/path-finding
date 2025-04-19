@@ -47,7 +47,7 @@ def find_shortest_path(
             return (node.g_val, traceback(node))
 
         closed[node.id] = node
-        for edge in graph.get_adjacent_edges(node.id):
+        for edge in graph.get_outbound_edges(node.id):
             weight = edge.get_weight()
             other_node = edge.get_other_node(node.id)
             new_g_val = node.g_val + weight
