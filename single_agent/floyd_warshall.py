@@ -4,6 +4,8 @@ from typing import (
 
 from common import (
     Graph,
+    Node,
+    Edge,
 )
 from single_agent.output_information import (
     OutputInformation,
@@ -16,7 +18,7 @@ def make_output_information(
     for node in graph.nodes.values():
         output_info = OutputInformation(graph, node)
 
-        for adjacent_edge in graph.get_adjacent_edges(node.id):
+        for adjacent_edge in graph.get_outbound_edges(node.id):
             other_node = adjacent_edge.get_other_node(node.id)
             output_info.set_distance(other_node.id, adjacent_edge.get_weight())
             output_info.update_parent_of_node(node_id=other_node.id, parent_id=node.id)
@@ -37,7 +39,7 @@ def make_output_information(
 
                 output_info_for_start_node.set_distance(end_node.id, new_distance)
                 output_info_for_start_node.update_parent_of_node(
-                    node_id=end_node.id, parent_id=pivot_node.id
+                    node_id=end_node.id, parent_id=output_info_for_pivot_node.get_parent(end_node.id).value.id,
                 )
 
     return output_info_dict
