@@ -15,7 +15,7 @@ from common import (
 
 @dataclass
 class ExpandNode:
-    parent: "ExpandNode"
+    parent: "ExpandNode|None"
     value: Node
     goal: Node
     g_val: float
@@ -28,7 +28,7 @@ class ExpandNode:
     @property
     def f_val(self) -> float:
         return self.g_val + self.h_func(self)
-    
+
     def __lt__(self, other):
         return self.f_val < other.f_val
 
@@ -38,7 +38,7 @@ def find_shortest_path(
     source_node_id: int,
     goal_node_id: int,
     h_func: Callable,
-) -> Tuple[float, Tree]:
+) -> Tuple[float, List[int]]:
     source_node = graph.get_node(source_node_id)
     goal_node = graph.get_node(goal_node_id)
 
@@ -50,7 +50,7 @@ def find_shortest_path(
     while len(open) > 0:
         node = heapq.heappop(open)
         if node.id == goal_node_id:
-            return (node.g_val, traceback(node))
+            return (node.g_val, make_path(node))
 
         closed[node.id] = node
         for edge in graph.get_outbound_edges(node.id):
@@ -62,7 +62,7 @@ def find_shortest_path(
 
     return (float("inf"), [])
 
-def traceback(node: ExpandNode) -> List[ExpandNode]:
+def make_path(node: ExpandNode) -> List[int]:
     path = [node.id]
     while node.parent != None:
         path.append(node.parent.id)
